@@ -1,6 +1,4 @@
 from fbprophet import Prophet
-import pandas as pd
-from DataPreprocessing import get_data, load_and_save
 import pickle
 import numpy as np
 import plotly as py
@@ -71,6 +69,7 @@ class ModelTraining:
         except Exception as e:
             print("Error in Creating or Loading model as {}".format(e))
 
+
     def FutureForecasting(self, model, periods, freq):
         """
                                  Method Name: FutureForecasting
@@ -88,7 +87,7 @@ class ModelTraining:
         self.periods = periods
         self.freq = freq
         try:
-            forecast = model.make_future_dataframe(self.periods,self.freq)
+            forecast = self.model.make_future_dataframe(self.periods, self.freq)
             prediction = model.predict(forecast)
             future_df = prediction[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
             return future_df
@@ -168,33 +167,6 @@ class ModelTraining:
                 color="RebeccaPurple"
             )
         )
-        if not os.path.exists("images"):
-            os.mkdir("images")
-        fig.write_image("images/{}_fig1.jpeg".format(var))
-
-    #
-    # def RenameColumns(self, list , name):
-    #     rename = [name, list]
-    #     return rename
-
-
-# some time later...
-
-# load the model from disk
-# loaded_model = pickle.load(open(filename, 'rb'))
-#
-#
-# #making future predictions for test dates starting from 2020-07-16 to 2020-07-20
-# future = loaded_model.make_future_dataframe(periods=0)
-# forecasttest = loaded_model.predict(future)
-# print(forecasttest[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(10))
-
-#
-
-
-        # future = co.make_future_dataframe(periods=4320, freq='Min')
-        # forecasttest = co.predict(future)
-        # print(forecasttest[['ds', 'yhat', 'yhat_lower', 'yhat_upper']])
-        #
-        # future_df = forecasttest[['ds', 'yhat']]
-        # print(future_df)
+        if not os.path.exists("Prediction service/images"):
+            os.mkdir("Prediction service/images")
+        fig.write_image("Prediction service/images/{}_fig1.jpeg".format(var))

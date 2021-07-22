@@ -1,71 +1,40 @@
-# import pandas as pd
-# import numpy as np
+
 import pandas as pd
 from DataPreprocessing import get_data, load_and_save
 from modeltraining import ModelTraining
-
 import glob
-# import numpy as np
+import numpy as np
+path = "data/sensors_wise_data"
 #
+all_files = glob.glob(path + "/*.csv")
 #
-co_data = get_data("data/sensors_wise_data/co.csv")
-print(co_data.co)
-training = ModelTraining()
-model = training.create_save_load_model(data=co_data, model_name="co_model")
-print("Model Created")
-fs = training.FutureForecasting(model=model, periods=4320, freq="Min")
-print("\n The forecasted Data is ")
-print(fs)
-acc = training.accuracy_metrics(model=model, freq="Min", actual_df=co_data["y"])
-print(acc)
-acc_df = pd.DataFrame(index=acc.keys())
-acc_df["Co_Data"] = acc.values()
-# print(acc_df)
-plots = training.plot_predictions(co_data, fs, "co")
+acc_df = pd.DataFrame(index=['mape', 'me', 'mae',
+                   'mpe', 'rmse',
+                      'corr', 'minmax'])
 
-# print("saved:", fs.to_csv("Prediction service/Forecast/co_forecast.csv"))
-# humidity_data = get_data("sensors_wise_data/humidity.csv")
-# temp_data = get_data("sensors_wise_data/temp.csv")
-# load_and_save("sensors_wise_data/co.csv", "Prediction service/co.csv")
-# load_and_save("sensors_wise_data/humidity.csv", "Prediction service/humidity.csv")
-# load_and_save("sensors_wise_data/temp.csv", "Prediction service/temp.csv")
-#
-# print(len(co_data))
-# print(len(humidity_data))
-# print(len(temp_data))
-# print(temp_data.head())
-# # #
-# path = "sensors_wise_data"
-# # #path = r"C:\Users\kadam\Documents\Data Science\Projects\IoT_Forecasting\sensors_wise_data"
-# all_files = glob.glob(path + "/*.csv")
-# #
-# li = []
-# acc_df = pd.DataFrame(index=['mape', 'me', 'mae',
-#                      'mpe', 'rmse',
-#                      'corr', 'minmax'])
-# for filename in all_files:
-#
-#     data = get_data(filename)
-#     name = filename[18:-4]
-#     #save_data = load_and_save(filename, "Prediction service/" + name)
-#     li.append(name)
-#     training = ModelTraining()
-#     model = training.create_save_load_model(data=data, model_name=name)
-#     print("Model Created")
-#     fs = training.FutureForecasting(model=model, periods=4320, freq="Min")
-#     print("\n Forecasted Data is Saved")
-#    #print(fs.to_csv("Prediction service/Forecast/{}_forecast.csv".format(name)))
-#     accuracy = training.accuracy_metrics(model, freq="Min", actual_df=data["y"])
-#     acc_df[name] = accuracy.values()
-#     plots = training.plot_predictions(data, fs, name)
-#
-# print(acc_df)
-# print(li)
+for filename in all_files:
+    # load data
+    data = get_data(filename)
+    name = filename[23:-4]
 
-# cols  = ["temp_" + co_data.columns[1:]]
-# print(cols)
+    # Model Training
+    training = ModelTraining()
+    model = training.create_save_load_model(data=data, model_name=name)
+    print("Model Created")
 
+    # Model Forecasting
+    fs = training.FutureForecasting(model=model, periods=4320, freq="Min")
 
+    # save the forecasted data to Prediction service/Forecast/ folder
+    fs.to_csv("Prediction service/Forecast/{}_forecast.csv".format(name))
+    print("\n Forecasted Data is Saved")
 
+    # accuracy metrics
+    accuracy = training.accuracy_metrics(model, freq="Min", actual_df=data["y"])
+    acc_df[name] = accuracy.values()
 
+    # Creating plots and saving it to Plots Folder
+    plots = training.plot_predictions(data, fs, name)
 
+# Save the accuracy_metrics
+acc_df.to_csv("Prediction service/Accuracy_metrics.csv")
