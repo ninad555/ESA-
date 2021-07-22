@@ -17,7 +17,7 @@ class DataModelling:
     def __init__(self,path):
         self.log_writer = logger.App_Logger()
         self.file_object = open("Training_Logs/ModelTrainingLog.txt", 'a+')
-        self.path = 'sensors_wise_data/co.csv'  #path
+        self.path = 'data/sensors_wise_data/co.csv'  #path
 
     def read_inputs(self):
         self.df = pd.read_excel(self.path, parse_dates=["Datetime"])

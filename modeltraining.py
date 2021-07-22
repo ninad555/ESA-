@@ -22,7 +22,7 @@ class ModelTraining:
         print("ModelTraining..... ")
         # self.file_object = open("Training_Logs/ModelTrainingLog.txt", 'a+')
         # self.log_writer = logger.App_Logger()
-        self.path = 'sensors_wise_data/co.csv'  #path
+        self.path = 'data/sensors_wise_data/co.csv'  #path
 
     def reformat(self, df):
         """

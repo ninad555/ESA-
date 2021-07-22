@@ -7,28 +7,8 @@ from modeltraining import ModelTraining
 import glob
 # import numpy as np
 #
-
-def forecast_accuracy(forecast, actual):
-    mape = np.mean(np.abs(forecast - actual) / np.abs(actual))  # MAPE
-    me = np.mean(forecast - actual)  # ME
-    mae = np.mean(np.abs(forecast - actual))  # MAE
-    mpe = np.mean((forecast - actual) / actual)  # MPE
-    rmse = np.mean((forecast - actual) ** 2) ** .5  # RMSE
-    corr = np.corrcoef(forecast, actual)[0, 1]  # corr
-    mins = np.amin(np.hstack([forecast[:, None],
-                              actual[:, None]]), axis=1)
-    maxs = np.array(np.amax(np.hstack([forecast[:, None],
-                              actual[:, None]]), axis=1))
-    minmax = 1 - np.mean(mins / maxs)  # minmax
-
-    return ({'mape': mape, 'me': me, 'mae': mae,
-             'mpe': mpe, 'rmse': rmse,
-             'corr': corr, 'minmax': minmax})
-
-
-
 #
-co_data = get_data("sensors_wise_data/co.csv")
+co_data = get_data("data/sensors_wise_data/co.csv")
 print(co_data.co)
 training = ModelTraining()
 model = training.create_save_load_model(data=co_data, model_name="co_model")
